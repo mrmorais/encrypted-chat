@@ -77,7 +77,7 @@ class EncryptedChat():
     Connect to a new host
     """
 
-    if len(self.CONNECTION_LIST) < 3:
+    if not self.get_guest_sock():
       guest_sock = socket(AF_INET, SOCK_STREAM)
       guest_sock.settimeout(2)
 
