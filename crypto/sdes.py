@@ -1,9 +1,8 @@
 import sys
-import numpy as np
 import zlib
 import bz2
-class Des:
-    def __init__(self):
+class SDes:
+    def __init__(self, key):
         self.p10 = [3,5,2,7,4,10,1,9,8,6]
         self.p8 = [6,3,7,4,8,5,10,9]
         self.p4 = [2, 4, 3, 1]
@@ -12,7 +11,7 @@ class Des:
         self.ep = [4, 1, 2, 3, 2, 3, 4, 1]
         self.s_0 = [[1, 0, 3, 2], [3, 2, 1, 0], [0, 2, 1, 3], [3, 1, 3, 2]]
         self.s_1 = [[1, 1, 2, 3], [2, 0, 1, 3], [3, 0, 1, 0], [2, 1, 0, 3]]
-        self.key = '1010000010'
+        self.key = key
 
     def permutation(self, chain, permut):
         p = []
@@ -96,7 +95,7 @@ class Des:
         #IP
         bytePlainText = self.permutation(bytePlainText, 'ip')
         textL1 = bytePlainText[:4] #fazer o xor no final
-        textR1 = bytePlainText[4:] #sera usado no começo e na outra volta
+        textR1 = bytePlainText[4:] #sera usado no comeco e na outra volta
         #E/P
         epChain1 = self.permutation(textR1, 'ep')
         #XOR
@@ -166,15 +165,15 @@ class Des:
             cipherText.append(self.fkFunction(bt, k1, k2))
         return self.binaryToText(cipherText)
 
-def main():
-    des = Des()
-    cipher = des.encrypt('pronto para encriptar campeão?')
-    print(cipher)
+# def main():
+#     des = Des()
+#     cipher = des.encrypt('pronto para encriptar campeão?')
+#     print(cipher)
 
     
-    plain = des.decrypt(cipher)
-    compressed_data = bz2.compress(plain)
-    print("compressed data: " + str(compressed_data))
-    print(plain)
-if __name__ == '__main__':
-    main()
+#     plain = des.decrypt(cipher)
+#     compressed_data = bz2.compress(plain)
+#     print("compressed data: " + str(compressed_data))
+#     print(plain)
+# if __name__ == '__main__':
+#     main()
