@@ -59,14 +59,10 @@ class Des:
         setBits = binaryNumber[2:]
         return setBits
 
-    def getBinaryText(self, plainText, flag): #flag indica se sera texto ou hexadecimal  
+    def getBinaryText(self, plainText):
         textBinarySet = []
-        if flag:
-            for t in plainText:
-                textBinarySet.append(self.getBinarySet(ord(t)).zfill(8))
-        else:
-            pass
-            
+        for t in plainText:
+            textBinarySet.append(self.getBinarySet(ord(t)).zfill(8))
         return textBinarySet
 
     def xor(self, chain1, chain2):
@@ -156,7 +152,7 @@ class Des:
         k1 = keys[0]
         k2 = keys[1]
         plainText = []
-        cipherBinary = self.hexaToBinary(cipherText)
+        cipherBinary = self.getBinaryText(cipherText)
         for bt in cipherBinary:
              plainText.append(self.fkFunction(bt, k2, k1))
         return self.binaryToText(plainText)
@@ -167,10 +163,10 @@ class Des:
         k1 = keys[0]
         k2 = keys[1]
         cipherText = []
-        byteTextSet = self.getBinaryText(plainText, True)
+        byteTextSet = self.getBinaryText(plainText)
         for bt in byteTextSet:
             cipherText.append(self.fkFunction(bt, k1, k2))
-        return self.binaryToHexa(cipherText)
+        return self.binaryToText(cipherText)
 
 def main():
     des = Des()
