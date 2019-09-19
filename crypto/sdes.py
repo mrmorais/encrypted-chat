@@ -1,6 +1,7 @@
 import sys
 import numpy as np
-
+import zlib
+import bz2
 class Des:
     def __init__(self):
         self.p10 = [3,5,2,7,4,10,1,9,8,6]
@@ -131,9 +132,6 @@ class Des:
         cipherText = self.permutation(cipherText,'ip_1')
         return cipherText
 
-
-    def binaryToHexa(self, listByteText):
-        return ''.join(["{:02x}".format(int(bt, 2)) for bt in listByteText])
     
     def hexaToBinary(self, hexaText):
         textBytes = []
@@ -173,7 +171,10 @@ def main():
     cipher = des.encrypt('pronto para encriptar campeão?')
     print(cipher)
 
+    
     plain = des.decrypt(cipher)
+    compressed_data = bz2.compress(plain)
+    print("compressed data: " + str(compressed_data))
     print(plain)
 if __name__ == '__main__':
     main()
