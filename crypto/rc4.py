@@ -92,10 +92,10 @@ class RC4:
             raise Exception("Invalid output format")
     
     def encrypt(self, text):
-        return self.apply(text, i_format='ascii', o_format='hex')
+        return self.apply(text, i_format='ascii', o_format='ascii')
 
     def decrypt(self, text):
-        return self.apply(text, i_format='hex', o_format='ascii')
+        return self.apply(text, i_format='ascii', o_format='ascii')
 
 if __name__ == "__main__":
     import sys
