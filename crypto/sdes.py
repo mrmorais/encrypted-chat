@@ -1,6 +1,4 @@
 import sys
-import zlib
-import bz2
 class SDes:
     def __init__(self, key):
         self.p10 = [3,5,2,7,4,10,1,9,8,6]
