@@ -30,6 +30,14 @@ class ChatCore():
         self.connector = ChatConnector(host, port)
         self.host = host
         self.port = port
+
+    def close_all(self):
+        """
+        Close all binding connections
+        """
+        
+        self.connector.close_guest_connection()
+        self.connector.close_host_connection()
         
     def initialize(self):
         self.chat_output_handler(OutputType.LOG, "[core] Initializing chat server on {}:{} ... ".format(self.host, self.port))

@@ -49,6 +49,18 @@ class EncryptedChat():
         sys.stdout.write("\r<{}> ".format(self.my_name))
         sys.stdout.flush()
         
+    def decrypt_text(self, text):
+        """
+        Decrypt text if needed
+        """
+
+        if self.enc_alg == CryptoAlg.SDES:
+            return self.sdes.decrypt(str(text))
+        elif self.enc_alg == CryptoAlg.RC4:
+            return self.rc4_dec.decrypt(str(text))
+        else:
+            return str(text)
+
     def output_handler(self, output_type, text_output):
         """
         CLI printer hook
@@ -60,13 +72,7 @@ class EncryptedChat():
         if output_type == OutputType.GUEST:
             sys.stdout.write("\r<{}> ".format(self.guest_name))
         
-        if (self.enc_alg == CryptoAlg.NONE) or (output_type == OutputType.LOG):
-            sys.stdout.write(str(text_output))
-        else:
-            if self.enc_alg == CryptoAlg.SDES:
-                sys.stdout.write(self.sdes.decrypt(str(text_output)))
-            elif self.enc_alg == CryptoAlg.RC4:
-                sys.stdout.write(self.rc4_dec.decrypt(str(text_output)))
+        sys.stdout.write(text_output)
             
         sys.stdout.write('\n')
         
@@ -119,11 +125,11 @@ class EncryptedChat():
         """
         Handle internal and external inputs parsing and executing
         commands.
-        """
-        command, args, text = self.parse_input(input_text)
+        """        
         
         if input_type == InputType.INTERNAL:
             # Command from this chat
+            command, args, text = self.parse_input(input_text)
             
             # @@ Initialize a connection
             if command == "/connect":
@@ -149,6 +155,10 @@ class EncryptedChat():
                 else:
                     self.output_handler(OutputType.LOG, "[~info] Invalid params to init a crypto channel")
                 self.prompt()
+            elif command == "/exit":
+                self.output_handler(OutputType.LOG, "[~info] Good bye")
+                self.core.close_all()
+                sys.exit(0)
             
             # @@ Send a text message [default behaviour]
             else:
@@ -160,7 +170,9 @@ class EncryptedChat():
             
         elif input_type == InputType.EXTERNAL:
             # Command from guest
-            
+            parsed_input = self.decrypt_text(input_text)
+            command, args, text = self.parse_input(parsed_input)
+
             # @@ Guest wants to start a crypto channel
             if command == "/dh_begin":
                 if len(args) == 2:
@@ -180,7 +192,7 @@ class EncryptedChat():
                     self.init_enc_algorithm(args[0], k)
             # @@ Receive a guest message
             else:
-                self.output_handler(OutputType.GUEST, input_text)
+                self.output_handler(OutputType.GUEST, text)
                 self.prompt()
 
 if __name__ == "__main__":
